@@ -10,6 +10,8 @@ URLS = {
 
 
 def parse_request(request):
+    '''Parse request and take method and url from this.'''
+
     method, url = None, None
     try:
         parsed = request.split(' ')
@@ -23,7 +25,9 @@ def parse_request(request):
 
 
 def generate_headers(method, url):
-    if method != "GET":
+    '''Check method and url and return headers.'''
+
+    if method != 'GET':
         return ('HTTP/1.1 405 Method not allowed\n\n', 405)
     if url not in URLS:
         return ('HTTP/1.1 404 Not found\n\n', 404)
@@ -31,6 +35,8 @@ def generate_headers(method, url):
 
 
 def generate_content(code, url):
+    '''Return content depending on the code.'''
+
     if code == 404:
         return '<h1>404</h1><p>Not found</p>'
     if code == 405:
@@ -39,6 +45,8 @@ def generate_content(code, url):
 
 
 def generate_response(request):
+    '''Consolidate and return response.'''
+
     method, url = parse_request(request)
     headers, code = generate_headers(method, url)
     body = generate_content(code, url)
@@ -47,7 +55,7 @@ def generate_response(request):
 
 
 def run():
-    # AF_INET это протокол IP адресса 4 версии
+    # AF_INET это протокол IP адреса 4 версии
     # SOCK_STREAM это протокол TCP
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Чтобы отключить защитный механизм, который блокирует недавно
@@ -64,11 +72,11 @@ def run():
         client_socket, addr = server_socket.accept()
         # количество байт в пакете, которые будем получать от клиента
         request = client_socket.recv(1024)
-        # print(request.decode("utf-8"))
+        # print(request.decode('utf-8'))
         print(request)
         print()
         print(addr)
-        response = generate_response(request.decode("utf-8"))
+        response = generate_response(request.decode('utf-8'))
         client_socket.sendall(response)
         client_socket.close()
 
